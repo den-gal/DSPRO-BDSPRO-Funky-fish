@@ -1,0 +1,78 @@
+FischerTechnik Learning Factory — Test Datasets
+=================================================
+
+CSV captures of NebulaStream MQTT sources reading the FischerTechnik
+"Training Factory Industry 4.0 24V" broker (192.168.0.10:1883). Columns are
+the same across all three datasets; only duration and content differ.
+Timestamps are Unix epoch milliseconds. Header types follow
+`name:TYPE:NULLABILITY`.
+
+Files and columns
+------------------
+
+factory_bme680.csv — BME680 environmental sensor, HBW base plate. ~60s period.
+  ts, t (temp °C), rt (raw temp, always 0), h (humidity %),
+  rh (raw humidity, always 0), p (pressure hPa), iaq (air quality index),
+  aq (IAQ accuracy 0-3), gr (gas resistance Ω, always 0)
+
+factory_broadcast.csv — TXT controller identity/keep-alive. Fires on
+connect then rarely; usually empty.
+  ts, hardwareId, hardwareModel, softwareName, softwareVersion, message
+
+factory_ldr.csv — photoresistor, wired to TXT. ~60s period.
+  ts, br (derived brightness), ldr (raw resistance Ω)
+
+factory_nfc_ds.csv — NFC reads at the DPS station, via PLC/Node-RED
+(f/i/nfc/ds). No timestamp on this topic.
+  workpiece_id (tag UID), workpiece_type (RED/WHITE/BLUE/NONE),
+  workpiece_state (e.g. RAW, PROCESSED, NONE)
+
+factory_nfc_ds_local.csv — same NFC reader, read directly off the TXT's
+I²C bus (fl/i/nfc/ds).
+  ts, workpiece_id, workpiece_type, workpiece_state
+
+factory_order.csv — order-state tracking (f/i/order).
+  ts, state (ORDERED/IN_PROCESS/SHIPPED/WAITING_FOR_ORDER/...),
+  type (order color; empty when no order active)
+
+factory_ptu_pos.csv — pan/tilt position of the SSC camera mount (i/ptu/pos).
+  ts, pan, tilt (unitless, undocumented range)
+
+factory_station_state.csv — per-station status (f/i/state/<station>).
+  ts, station (hbw/vgr/mpo/sld/dsi/dso), code (status/error code),
+  description (nullable, usually empty), active (bool),
+  target (nullable, only set for vgr code=2)
+
+factory_stock.csv — HBW's 9 storage slots (f/i/stock). Slot index 0-8
+maps row-major to A1,A2,A3,B1,B2,B3,C1,C2,C3.
+  ts, then per slot N: slotN_location, slotN_workpiece_id (tag UID, "0" if
+  empty), slotN_workpiece_type (empty if slot empty), slotN_workpiece_state
+  (empty if slot empty) — all three workpiece fields nullable
+
+
+1. TwoOrdersComplete/
+----------------------
+Two orders (one RED, one WHITE workpiece) placed and shipped end-to-end.
+factory_order.csv shows both going ORDERED -> IN_PROCESS -> SHIPPED, and
+factory_stock.csv shows slots A3 and B2 emptying over the run.
+
+Duration: 10 min 18 s (617.5 s), ts 1790771603215 to 1790772220720.
+
+
+2. RawMaterialDelivery/
+-------------------------
+Two raw workpieces (BLUE, WHITE) scanned in at the DPS station and stocked
+into the HBW. No order is placed. factory_order.csv and
+factory_broadcast.csv are empty; factory_nfc_ds.csv shows the two scans
+resolving to BLUE/RAW and WHITE/RAW.
+
+Duration: 5 min 53 s (352.97 s), ts 1790772538962 to 1790772891932.
+
+
+3. Idle/
+---------
+Factory idle, no orders and no workpieces moved. factory_broadcast.csv,
+factory_nfc_ds.csv, factory_nfc_ds_local.csv and factory_order.csv are
+empty; factory_stock.csv is identical in every row (no slot changes).
+
+Duration: 3 min 29 s (208.77 s), ts 1790773331648 to 1790773540420.
