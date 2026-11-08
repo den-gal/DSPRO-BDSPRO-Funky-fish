@@ -1,5 +1,6 @@
 from unit import Unit
 
+
 class OutputStation(Unit):
     """
     Output station unit stores requested cargo
@@ -8,7 +9,7 @@ class OutputStation(Unit):
                  name: str = "Output station",
                  station: str = "dso",
                  code: int = 1,
-                 target=None,
-                 description=None,
-                 active: bool = False):
+                 target: str = "",
+                 description: str = "",
+                 active: bool = False) -> None:
         super().__init__(name, station, code, target, description, active)

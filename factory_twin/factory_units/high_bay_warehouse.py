@@ -1,5 +1,6 @@
 from unit import Unit
 
+
 class HighBayWarehouse(Unit):
     """
     High-bay warehouse unit that combines environment sensor and warehouse that stores the cargo
@@ -8,7 +9,7 @@ class HighBayWarehouse(Unit):
                  name:str = "High-bay warehouse",
                  station: str = "hbw",
                  code: int = 1,
-                 target=None,
-                 description=None,
-                 active: bool = False):
+                 target: str = "",
+                 description: str = "",
+                 active: bool = False) -> None:
         super().__init__(name, station, code, target, description, active)

@@ -1,16 +1,19 @@
 [project]
-name = "dspro-bdspro-funky-fish"
+name = "dspro_bdspro_funky_fish"
 version = "0.0.1"
 description = ""
 authors = [
     {name = "den-gal",email = "denis.galanin@campus.tu-berlin.de"},
-    {name = "irishisha",email = ""},
-    {name = "rige4",email = ""},
-    {name = "vanhoa27",email = ""}
+    {name = "irishisha"},
+    {name = "rige4"},
+    {name = "vanhoa27"}
 ]
 readme = "README.md"
-requires-python = "^3.14"
+requires-python = ">=3.14"
 dependencies = [
+    "paho-mqtt (>=2.2.0,<3.0.0)",
+    "ruff",
+    "mypy"
 ]
 
 
